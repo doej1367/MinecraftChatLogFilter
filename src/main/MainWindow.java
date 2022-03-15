@@ -137,7 +137,7 @@ public class MainWindow extends JFrame {
 		inputTextField.setWrapStyleWord(true);
 		inputTextField.setRows(4);
 		inputTextField.setFont(new Font("Consolas", Font.PLAIN, 14));
-		inputTextField.setText("(You bought Kismet Feather!.*)|(You claimed Kismet Feather from .* auction!)");
+		inputTextField.setText("(You bought Kismet Feather!.*)|(You claimed Kismet Feather from .* auction!)|(The Catacombs - Floor VII)->(Team Score: [0-9]+ \\(S\\+\\).*)");
 		inputTextField.setEditable(true);
 		scrollPaneTop.setViewportView(inputTextField);
 
