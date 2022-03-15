@@ -11,7 +11,7 @@ A Java tool to filter the chat messages logged in all Minecraft log files availa
 The syntax is mainly RegEx with a three additional rules, so that it all works together with the concept of multiple chat log lines. Here are the main features:
 - `(regex)` - filters all lines that match the provided regex
 - `(regex1)|(regex2)` - filters all lines that match either one of the two provided regex
-- `(regex1)->(regex2)` - filters all lines that match the first regex and the second regex matches one of the followup lines
+- `(regex1)->(regex2)` - filters all lines where the line matches the first regex and the second regex matches one of the followup lines
 
 These three can be combined to one big regex. One example for this would be a regex to filter all lines that either indicate the gaining of a 'Kismet Feather' or the successful S+ completion of a Floor 7 run (Hypixel SkyBlock example):
 
