@@ -1,7 +1,7 @@
 package util;
 
 /**
- * 
+ *
  * @author doej1367
  */
 public class MCLogLine implements Comparable<MCLogLine> {
@@ -29,6 +29,10 @@ public class MCLogLine implements Comparable<MCLogLine> {
 
 	public String getText() {
 		return text;
+	}
+
+	public void appendText(String additionalText) {
+		text += additionalText;
 	}
 
 	public int matches(String[] regexArray) {

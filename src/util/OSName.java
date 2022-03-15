@@ -18,7 +18,7 @@ public final class OSName {
 	 */
 	public enum OSType {
 		Windows, MacOS, Linux, Other
-	};
+	}
 
 	// cached result of OS detection
 	protected static OSType detectedOS;
@@ -26,7 +26,7 @@ public final class OSName {
 	/**
 	 * detect the operating system from the os.name System property and cache the
 	 * result
-	 * 
+	 *
 	 * @returns - the operating system detected
 	 */
 	public static OSType getOperatingSystemType() {

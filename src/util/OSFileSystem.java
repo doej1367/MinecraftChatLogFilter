@@ -58,7 +58,7 @@ public class OSFileSystem {
 			mainWindow.addStatus("INFO: Found " + minecraftFolder.getAbsolutePath());
 
 		// get log folders
-		ArrayList<File> minecraftLogFolders = new ArrayList<File>();
+		ArrayList<File> minecraftLogFolders = new ArrayList<>();
 		for (File minecraftFolder : minecraftFolders) {
 			for (File folder : minecraftFolder.listFiles()) {
 				if (folder.isDirectory()) {

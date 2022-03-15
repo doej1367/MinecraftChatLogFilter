@@ -1,21 +1,22 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextArea;
-import java.awt.Font;
-import java.awt.Button;
-import java.awt.TextField;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 
 public class FolderWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +31,7 @@ public class FolderWindow extends JFrame {
 	public FolderWindow(MainWindow mainWindow) {
 		setTitle("Add custom .minecraft folder locations ...");
 		// window to add folder locations
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setBounds(100, 100, 595, 400);
 		setMinimumSize(getSize());
 		setLocationRelativeTo(null);
@@ -51,6 +52,7 @@ public class FolderWindow extends JFrame {
 		JFrame folderSelector = this;
 		Button folderSelectButton = new Button("Select Folder");
 		folderSelectButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -64,6 +66,7 @@ public class FolderWindow extends JFrame {
 
 		Button folderAddButton = new Button("Add");
 		folderAddButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				addFolder(folderPathInput.getText(), mainWindow);
 			}

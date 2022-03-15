@@ -3,7 +3,7 @@ package util;
 import java.util.HashMap;
 
 /**
- * 
+ *
  * @author doej1367
  */
 public class TimeslotMap extends HashMap<Integer, Integer> {
@@ -15,7 +15,7 @@ public class TimeslotMap extends HashMap<Integer, Integer> {
 	private final long floor_seven_birthday = 1605571200000L;
 
 	/**
-	 * 
+	 *
 	 * @param slotDurationInDays
 	 * @param start              - starting time is 0 = skyblock_birthday, 1 =
 	 *                           dungeon_birthday, 2 = floor_seven_birthday
@@ -31,7 +31,7 @@ public class TimeslotMap extends HashMap<Integer, Integer> {
 	public Integer add(long timestamp, Integer value) {
 		int timeSlot = (int) ((timestamp - timeSlotStart) / (days * 86400000L));
 		value += getOrDefault(timeSlot, 0);
-		return put((int) timeSlot, value);
+		return put(timeSlot, value);
 	}
 
 	public Integer getSum() {
