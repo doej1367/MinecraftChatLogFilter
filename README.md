@@ -10,4 +10,6 @@ These three can be combined to one big regex. One example for this would be a re
 
 `(You bought Kismet Feather!.*)|(You claimed Kismet Feather from .* auction!)|(The Catacombs - Floor VII)->(Team Score: [0-9]+ \(S\+\).*)`
 
+More examples can be found and posted in the [Discussions section](https://github.com/doej1367/MinecraftChatLogFilter/discussions/categories/regex-examples)
+
 ![MinecraftChatSearch](screenshots/screenshot01.png)
