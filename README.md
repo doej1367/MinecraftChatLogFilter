@@ -8,7 +8,7 @@ A Java tool to filter the chat messages logged in all Minecraft log files availa
 4. Click the left `Start analyzing currently known .minecraft folders` button and wait for your results
 
 ## Syntax
-The syntax in the core is a simple RegEx syntax with a speciallities so that it all works together with the concept of multiple chat log lines. Here are the main features:
+The syntax is a simply RegEx syntax with a three additional rules so that it all works together with the concept of multiple chat log lines. Here are the main features:
 - `(regex)` - filters all lines that match the provided regex
 - `(regex1)|(regex2)` - filters all lines that match either one of the two provided regex
 - `(regex1)->(regex2)` - filters all lines that match the first regex and the second regex matches one of the followup lines
