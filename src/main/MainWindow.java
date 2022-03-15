@@ -134,6 +134,7 @@ public class MainWindow extends JFrame {
 		JScrollPane scrollPaneTop = new JScrollPane();
 		panel_south.add(scrollPaneTop, BorderLayout.NORTH);
 		inputTextField = new JTextArea();
+		inputTextField.setLineWrap(true);
 		inputTextField.setWrapStyleWord(true);
 		inputTextField.setRows(4);
 		inputTextField.setFont(new Font("Consolas", Font.PLAIN, 14));
