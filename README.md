@@ -15,7 +15,7 @@ The syntax is mainly RegEx with a three additional rules, so that it all works t
 
 These three can be combined to one big regex. One example for this would be a regex to filter all lines that either indicate the gaining of a 'Kismet Feather' or the successful S+ completion of a Floor 7 run (Hypixel SkyBlock example):
 
-`(You bought Kismet Feather!.*)|(You claimed Kismet Feather from .* auction!)|(The Catacombs - Floor VII)->(Team Score: [0-9]+ \(S\+\).*)`
+`(You bought Kismet Feather!.*)|(You purchased .*Kismet Feather .*)|(The Catacombs - Floor VII)->(Team Score: [0-9]+ \(S\+\).*)`
 
 More examples can be found and posted in the [Discussions section](https://github.com/doej1367/MinecraftChatLogFilter/discussions/categories/regex-examples)
 
