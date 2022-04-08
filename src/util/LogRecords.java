@@ -116,6 +116,8 @@ public class LogRecords extends ArrayList<MCLogLine> {
 			foundLine = line;
 			for (int i = 1; i < subFilters.size(); i++) {
 				for (int j = 0; j < 20; j++) {
+					if (lineIndex >= logLines.size() - 1)
+						return;
 					line = logLines.get(lineIndex = (lineIndex < logLines.size() - 1) ? (lineIndex + 1) : lineIndex);
 					if (line.getText().matches(subFilters.get(0))) {
 						return;
