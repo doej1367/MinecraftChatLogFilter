@@ -21,7 +21,7 @@ public class MCLogFile {
 	private String playerName;
 	private Stream<String> linesStream;
 
-	public MCLogFile(File logFile, File previousLogFile) throws FileNotFoundException, IOException {
+	public MCLogFile(File logFile, File previousLogFile, boolean onlyChat) throws FileNotFoundException, IOException {
 		creationTime = previousLogFile != null ? getCreationTime(previousLogFile) : getCreationTime(logFile) - 21600000;
 		startingTimeOfFile = null;
 		InputStream inputStream = new FileInputStream(logFile);
@@ -33,7 +33,7 @@ public class MCLogFile {
 		linesStream = br.lines().filter(a -> {
 			if (tmpPlayerName == null && a.matches(userSettingLine + ".*"))
 				tmpPlayerName = a.replaceAll(userSettingLine, "");
-			return a.contains("[CHAT]");
+			return onlyChat ? a.contains("[CHAT]") : a.matches("\\[[0-9:]{8}\\] .*");
 		});
 		playerName = tmpPlayerName;
 	}

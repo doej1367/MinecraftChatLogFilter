@@ -34,6 +34,7 @@ import util.LogRecords;
 import util.MCLogFile;
 import util.MCLogLine;
 import util.OSFileSystem;
+import java.awt.Checkbox;
 
 /**
  *
@@ -49,6 +50,7 @@ public class MainWindow extends JFrame {
 	private JTextArea outputTextField;
 	private JScrollPane scrollPaneBottom;
 	private JTextArea statusTextField;
+	private Checkbox onlyChatCheckBox;
 	private Button defaultButton;
 	private Button addFoldersButton;
 	private JPanel panel_north;
@@ -61,6 +63,7 @@ public class MainWindow extends JFrame {
 
 	private int tmpStauslength = 0;
 	private JPanel panel_south;
+	private Component horizontalGlue_3;
 
 	/**
 	 * Create the frame.
@@ -97,6 +100,14 @@ public class MainWindow extends JFrame {
 		panel_north.add(defaultButton);
 		defaultButton.setForeground(Color.BLUE);
 		defaultButton.setFont(new Font("Consolas", Font.PLAIN, 14));
+		
+		horizontalGlue_3 = Box.createHorizontalGlue();
+		panel_north.add(horizontalGlue_3);
+
+		onlyChatCheckBox = new Checkbox("Only filter chat lines");
+		onlyChatCheckBox.setState(true);
+		onlyChatCheckBox.setFont(new Font("Consolas", Font.PLAIN, 14));
+		panel_north.add(onlyChatCheckBox);
 
 		horizontalGlue_2 = Box.createHorizontalGlue();
 		panel_north.add(horizontalGlue_2);
@@ -138,7 +149,8 @@ public class MainWindow extends JFrame {
 		inputTextField.setWrapStyleWord(true);
 		inputTextField.setRows(4);
 		inputTextField.setFont(new Font("Consolas", Font.PLAIN, 14));
-		inputTextField.setText("(You bought Kismet Feather!.*)|(You purchased .*Kismet Feather .*)|(The Catacombs - Floor VII)->(Team Score: [0-9]+ \\(S\\+\\).*)");
+		inputTextField.setText(
+				"(You bought Kismet Feather!.*)|(You purchased .*Kismet Feather .*)|(The Catacombs - Floor VII)->(Team Score: [0-9]+ \\(S\\+\\).*)");
 		inputTextField.setEditable(true);
 		scrollPaneTop.setViewportView(inputTextField);
 
@@ -162,7 +174,7 @@ public class MainWindow extends JFrame {
 		scrollPaneBottom.setViewportView(statusTextField);
 	}
 
-	private synchronized void analyze() {
+	private synchronized void analyze(boolean onlyChat) {
 		try {
 			OSFileSystem fileSystem = new OSFileSystem(mainWindow);
 			ArrayList<File> minecraftLogFolders = fileSystem.lookForMinecraftLogFolders();
@@ -203,7 +215,7 @@ public class MainWindow extends JFrame {
 					addStatusTemporaryly(
 							"INFO: Loading " + fileCount + " files - " + (counter * 100 / fileCount) + "%");
 				try {
-					minecraftLogFile = new MCLogFile(logFile, getPreviousFileInFolder(counter, allFiles));
+					minecraftLogFile = new MCLogFile(logFile, getPreviousFileInFolder(counter, allFiles), onlyChat);
 					if (minecraftLogFile.getPlayerName() != null) {
 						lastLoginName = minecraftLogFile.getPlayerName();
 						playerNames.put(lastLoginName, playerNames.getOrDefault(lastLoginName, 0) + 1);
@@ -275,7 +287,7 @@ public class MainWindow extends JFrame {
 		Thread t0 = new Thread() {
 			@Override
 			public void run() {
-				mainWindow.analyze();
+				mainWindow.analyze(onlyChatCheckBox.getState());
 			}
 		};
 		t0.start();
