@@ -22,6 +22,7 @@ import java.util.TreeSet;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -34,7 +35,11 @@ import util.LogRecords;
 import util.MCLogFile;
 import util.MCLogLine;
 import util.OSFileSystem;
-import java.awt.Checkbox;
+import javax.swing.JMenu;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -50,20 +55,21 @@ public class MainWindow extends JFrame {
 	private JTextArea outputTextField;
 	private JScrollPane scrollPaneBottom;
 	private JTextArea statusTextField;
-	private Checkbox onlyChatCheckBox;
-	private Button defaultButton;
-	private Button addFoldersButton;
 	private JPanel panel_north;
-	private Component horizontalGlue;
-	private Component horizontalGlue_1;
-	private Component horizontalGlue_2;
 
 	private TreeSet<String> additionalFolderPaths = new TreeSet<>();
 	private LogRecords logRecords;
 
 	private int tmpStauslength = 0;
 	private JPanel panel_south;
-	private Component horizontalGlue_3;
+	private JMenuBar menuBar;
+	private JMenu mnOptionsMenu;
+	private JMenuItem addFoldersButtonMenuItem;
+	private JCheckBoxMenuItem onlyChatCheckBoxMenu;
+	private Component horizontalGlue_1;
+	private Button defaultButton;
+	private Component horizontalGlue_2;
+	private JCheckBoxMenuItem stripColorCodesCheckBoxMenu;
 
 	/**
 	 * Create the frame.
@@ -86,34 +92,34 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_north, BorderLayout.NORTH);
 		panel_north.setLayout(new BoxLayout(panel_north, BoxLayout.X_AXIS));
 
-		horizontalGlue = Box.createHorizontalGlue();
-		panel_north.add(horizontalGlue);
-
-		defaultButton = new Button("Start analyzing currently known .minecraft folders");
-		defaultButton.setBackground(new Color(240, 248, 255));
-		defaultButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				startAnalysis();
-			}
-		});
-		panel_north.add(defaultButton);
-		defaultButton.setForeground(Color.BLUE);
-		defaultButton.setFont(new Font("Consolas", Font.PLAIN, 14));
-		
-		horizontalGlue_3 = Box.createHorizontalGlue();
-		panel_north.add(horizontalGlue_3);
-
-		onlyChatCheckBox = new Checkbox("Only filter chat lines");
-		onlyChatCheckBox.setState(true);
-		onlyChatCheckBox.setFont(new Font("Consolas", Font.PLAIN, 14));
-		panel_north.add(onlyChatCheckBox);
-
 		horizontalGlue_2 = Box.createHorizontalGlue();
 		panel_north.add(horizontalGlue_2);
 
-		addFoldersButton = new Button("Add custom .minecraft folder locations");
-		addFoldersButton.addActionListener(new ActionListener() {
+		defaultButton = new Button("Start analyzing currently known .minecraft folders");
+		defaultButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				startAnalysis();
+			}
+		});
+		defaultButton.setForeground(Color.BLUE);
+		defaultButton.setFont(new Font("Consolas", Font.PLAIN, 14));
+		defaultButton.setBackground(new Color(240, 248, 255));
+		panel_north.add(defaultButton);
+
+		menuBar = new JMenuBar();
+		menuBar.setBorderPainted(false);
+		panel_north.add(menuBar);
+
+		mnOptionsMenu = new JMenu("");
+		mnOptionsMenu.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icon-more-20.png")));
+		mnOptionsMenu.setSize(20, 20);
+		mnOptionsMenu.setHorizontalAlignment(SwingConstants.RIGHT);
+		mnOptionsMenu.setFont(new Font("Consolas", Font.PLAIN, 14));
+		menuBar.add(mnOptionsMenu);
+
+		addFoldersButtonMenuItem = new JMenuItem("Add custom .minecraft folder locations");
+		addFoldersButtonMenuItem.setFont(new Font("Consolas", Font.PLAIN, 14));
+		addFoldersButtonMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				EventQueue.invokeLater(new Runnable() {
@@ -129,10 +135,17 @@ public class MainWindow extends JFrame {
 				});
 			}
 		});
-		addFoldersButton.setBackground(new Color(255, 240, 245));
-		panel_north.add(addFoldersButton);
-		addFoldersButton.setForeground(new Color(153, 0, 102));
-		addFoldersButton.setFont(new Font("Consolas", Font.PLAIN, 14));
+		mnOptionsMenu.add(addFoldersButtonMenuItem);
+
+		stripColorCodesCheckBoxMenu = new JCheckBoxMenuItem("Strip color codes");
+		stripColorCodesCheckBoxMenu.setSelected(true);
+		stripColorCodesCheckBoxMenu.setFont(new Font("Consolas", Font.PLAIN, 14));
+		mnOptionsMenu.add(stripColorCodesCheckBoxMenu);
+
+		onlyChatCheckBoxMenu = new JCheckBoxMenuItem("Only filter chat lines");
+		onlyChatCheckBoxMenu.setFont(new Font("Consolas", Font.PLAIN, 14));
+		onlyChatCheckBoxMenu.setSelected(true);
+		mnOptionsMenu.add(onlyChatCheckBoxMenu);
 
 		horizontalGlue_1 = Box.createHorizontalGlue();
 		panel_north.add(horizontalGlue_1);
@@ -174,7 +187,19 @@ public class MainWindow extends JFrame {
 		scrollPaneBottom.setViewportView(statusTextField);
 	}
 
-	private synchronized void analyze(boolean onlyChat) {
+	private void startAnalysis() {
+		defaultButton.setEnabled(false);
+		addFoldersButtonMenuItem.setEnabled(false);
+		Thread t0 = new Thread() {
+			@Override
+			public void run() {
+				mainWindow.analyze(onlyChatCheckBoxMenu.getState(), stripColorCodesCheckBoxMenu.getState());
+			}
+		};
+		t0.start();
+	}
+
+	private synchronized void analyze(boolean onlyChat, boolean stripColorCodes) {
 		try {
 			OSFileSystem fileSystem = new OSFileSystem(mainWindow);
 			ArrayList<File> minecraftLogFolders = fileSystem.lookForMinecraftLogFolders();
@@ -215,7 +240,7 @@ public class MainWindow extends JFrame {
 					addStatusTemporaryly(
 							"INFO: Loading " + fileCount + " files - " + (counter * 100 / fileCount) + "%");
 				try {
-					minecraftLogFile = new MCLogFile(logFile, getPreviousFileInFolder(counter, allFiles), onlyChat);
+					minecraftLogFile = new MCLogFile(logFile, getPreviousFileInFolder(counter, allFiles), onlyChat, stripColorCodes);
 					if (minecraftLogFile.getPlayerName() != null) {
 						lastLoginName = minecraftLogFile.getPlayerName();
 						playerNames.put(lastLoginName, playerNames.getOrDefault(lastLoginName, 0) + 1);
@@ -251,7 +276,7 @@ public class MainWindow extends JFrame {
 			setOutput(sb.toString());
 			addStatus("INFO: Found " + logRecords.size() + " results!");
 			defaultButton.setEnabled(true);
-			addFoldersButton.setEnabled(true);
+			addFoldersButtonMenuItem.setEnabled(true);
 		} catch (Exception e) {
 			addStatus("ERROR: " + e.toString());
 			StringBuilder sb = new StringBuilder();
@@ -279,18 +304,6 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
-	}
-
-	private void startAnalysis() {
-		defaultButton.setEnabled(false);
-		addFoldersButton.setEnabled(false);
-		Thread t0 = new Thread() {
-			@Override
-			public void run() {
-				mainWindow.analyze(onlyChatCheckBox.getState());
-			}
-		};
-		t0.start();
 	}
 
 	/**

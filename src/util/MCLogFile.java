@@ -16,19 +16,22 @@ import java.util.zip.GZIPInputStream;
 
 public class MCLogFile {
 	private static String tmpPlayerName; // needs to be static. Streams are weird...
+	private boolean stripColorCodes;
 	private long creationTime;
 	private Long startingTimeOfFile;
 	private String playerName;
 	private Stream<String> linesStream;
 
-	public MCLogFile(File logFile, File previousLogFile, boolean onlyChat) throws FileNotFoundException, IOException {
+	public MCLogFile(File logFile, File previousLogFile, boolean onlyChat, boolean stripColorCodes)
+			throws FileNotFoundException, IOException {
+		this.stripColorCodes = stripColorCodes;
 		creationTime = previousLogFile != null ? getCreationTime(previousLogFile) : getCreationTime(logFile) - 21600000;
 		startingTimeOfFile = null;
 		InputStream inputStream = new FileInputStream(logFile);
 		if (logFile.getName().endsWith(".gz"))
 			inputStream = new GZIPInputStream(inputStream);
 		@SuppressWarnings("resource")
-		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "ISO-8859-1"));
 		final String userSettingLine = "\\[[0-9:]{8}\\] \\[Client thread/INFO\\]: Setting user: ";
 		linesStream = br.lines().filter(a -> {
 			if (tmpPlayerName == null && a.matches(userSettingLine + ".*"))
@@ -53,7 +56,8 @@ public class MCLogFile {
 	public List<MCLogLine> filterLines(String logLineFilterRegex, String lastPlayerName) {
 		List<MCLogLine> filteredlogLines = linesStream
 				.map(a -> new MCLogLine(getTime(creationTime, a.substring(1, 9)), lastPlayerName,
-						a.replaceAll("\\[[0-9:]{8}\\] \\[Client thread/INFO\\]: \\[CHAT\\] ", "").trim()))
+						a.replaceAll("\\[[0-9:]{8}\\] \\[Client thread/INFO\\]: \\[CHAT\\] ", "").trim(),
+						stripColorCodes))
 				.filter(a -> a.getText().matches(logLineFilterRegex)).collect(Collectors.toList());
 		linesStream.close();
 		return filteredlogLines;
